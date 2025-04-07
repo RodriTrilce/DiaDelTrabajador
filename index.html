@@ -299,7 +299,7 @@
 
 
 	<script>
-		document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     // Script actual para cambios responsive
     const bgSection = document.getElementById("bg-section");
     const bgRight = document.getElementById("bg-right");
@@ -344,15 +344,14 @@
         }
     }
 
-    // Efecto de confeti en la parte derecha
-    setTimeout(function() {
+    // Función para lanzar el confeti
+    function lanzarConfeti() {
         // Obtener el elemento de la parte derecha
         const rightSide = document.getElementById("bg-right");
         
         // Calcular la posición para el confeti (centrado en la parte derecha)
         const rect = rightSide.getBoundingClientRect();
         const x = rect.left + rect.width / 2;
-        const y = rect.top + rect.height / 2;
         
         // Convertir coordenadas a porcentajes para canvas-confetti
         const xPercent = x / window.innerWidth;
@@ -378,7 +377,40 @@
                 disableForReducedMotion: true
             });
         }, 500);
-    }, 800); // Pequeño retraso para asegurar que la página esté completamente cargada
+    }
+
+    // Variable para controlar si el confeti ya se ha lanzado
+    let confetiLanzado = false;
+
+    // Función para verificar si la sección bg-right está visible
+    function checkVisibility() {
+        if (!confetiLanzado && bgRight) {
+            const rect = bgRight.getBoundingClientRect();
+            // Verificar si la sección está visible (al menos parcialmente) en la ventana
+            const isVisible = (
+                rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.bottom >= 0
+            );
+            
+            if (isVisible) {
+                lanzarConfeti();
+                confetiLanzado = true; // Marcar como lanzado para no repetir
+            }
+        }
+    }
+
+    // Verificar visibilidad inicial después de que la página se cargue completamente
+    setTimeout(checkVisibility, 800);
+
+    // Verificar visibilidad al hacer scroll
+    window.addEventListener('scroll', checkVisibility);
+    
+    // Verificar visibilidad también si hay cambios en el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        // Reiniciar la bandera si hay un cambio de tamaño para permitir nuevo confeti
+        confetiLanzado = false;
+        checkVisibility();
+    });
 });
 	</script>
 </body>
