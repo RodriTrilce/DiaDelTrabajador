@@ -349,6 +349,12 @@ a.btn_scroll_to {
   a.btn_scroll_to {
     display: block;
   }
+  .tituloa img{
+    width: 100% !important;
+  }
+  .descripciona img {
+    width: 100% !important;
+}
 }
 
 @keyframes subtleBounce {
@@ -534,7 +540,7 @@ a.btn_scroll_to {
 }
 @media (max-width: 767px) {
   .content-left-wrapper {
-    height: 95vh !important;
+    height: 78vh !important;
     padding: 95px 15px 60px 15px;
   }
 }
