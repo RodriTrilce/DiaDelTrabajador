@@ -355,6 +355,9 @@ a.btn_scroll_to {
   .descripciona img {
     width: 100% !important;
 }
+span.float {
+  font-size: 13px;
+}
 }
 
 @keyframes subtleBounce {
@@ -1716,3 +1719,5 @@ input.qtyminus {
   font-weight: 500;
 }
 }
+
+

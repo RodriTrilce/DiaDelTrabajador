@@ -62,7 +62,9 @@
 							class="bi bi-arrow-down-short"></i></a>
 				</div>
 			</div>
-			<div id="bg-right" class="col-lg-6 d-flex flex-column content-right background-image bg-ri"
+
+			<div id="bg-right"
+				class="col-lg-6 d-flex flex-column content-right background-image bg-ri js-container container"
 				data-background="url(img/BG.svg)">
 				<div class="container my-auto py-5">
 					<div class="row">
@@ -107,18 +109,6 @@
 		</div>
 		<!-- /row -->
 	</div>
-	<!-- /container -->
-
-	<nav>
-		<ul class="cd-primary-nav">
-			<li><a href="index.html" class="animated_link">Wedding Version</a></li>
-			<li><a href="index-2.html" class="animated_link">Workshop Version</a></li>
-			<li><a href="index-3.html" class="animated_link">Party Version</a></li>
-			<li><a href="index-4.html" class="animated_link">Conference Version</a></li>
-			<li><a href="#0" class="animated_link">Purchase Template</a></li>
-		</ul>
-	</nav>
-	<!-- /menu -->
 
 	<div class="cd-overlay-nav">
 		<span></span>
@@ -302,58 +292,95 @@
 	<script src="js/velocity.min.js"></script>
 	<script src="js/functions.js"></script>
 	<script src="phpmailer/validate.js"></script>
-	
+
+	<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
-			const bgSection = document.getElementById("bg-section");
-			const bgRight = document.getElementById("bg-right");
-			const tituloaImg = document.getElementById("tituloa-img");
-			const descripcionaImg = document.getElementById("descripciona-img");
-	
-			if (window.innerWidth <= 768) {
-				// Cambiar fondos
-				if (bgSection) {
-					bgSection.setAttribute("data-background", "url(img/img_mobile.webp)");
-					bgSection.style.backgroundImage = "url('img/img_mobile.webp')";
-				}
-				if (bgRight) {
-					bgRight.setAttribute("data-background", "url(img/bg-mobile.svg)");
-					bgRight.style.backgroundImage = "url('img/bg-mobile.svg')";
-				}
-	
-				// Cambiar imágenes
-				if (tituloaImg) {
-					tituloaImg.src = "img/tituloa-mobile.svg";
-				}
-				if (descripcionaImg) {
-					descripcionaImg.src = "img/descripcionA-mobile.svg";
-				}
-	
-			} else {
-				// Escritorio
-				if (bgSection) {
-					bgSection.setAttribute("data-background", "url(img/BG_11zon.webp)");
-					bgSection.style.backgroundImage = "url('img/BG_11zon.webp')";
-				}
-				if (bgRight) {
-					bgRight.setAttribute("data-background", "url(img/BG.svg)");
-					bgRight.style.backgroundImage = "url('img/BG.svg')";
-				}
-	
-				if (tituloaImg) {
-					tituloaImg.src = "img/tituloa.svg";
-				}
-				if (descripcionaImg) {
-					descripcionaImg.src = "img/descripcionA.svg";
-				}
-			}
-		});
+    // Script actual para cambios responsive
+    const bgSection = document.getElementById("bg-section");
+    const bgRight = document.getElementById("bg-right");
+    const tituloaImg = document.getElementById("tituloa-img");
+    const descripcionaImg = document.getElementById("descripciona-img");
+
+    if (window.innerWidth <= 768) {
+        // Cambiar fondos
+        if (bgSection) {
+            bgSection.setAttribute("data-background", "url(img/img_mobile.webp)");
+            bgSection.style.backgroundImage = "url('img/img_mobile.webp')";
+        }
+        if (bgRight) {
+            bgRight.setAttribute("data-background", "url(img/bg-mobile.svg)");
+            bgRight.style.backgroundImage = "url('img/bg-mobile.svg')";
+        }
+
+        // Cambiar imágenes
+        if (tituloaImg) {
+            tituloaImg.src = "img/tituloa-mobile.svg";
+        }
+        if (descripcionaImg) {
+            descripcionaImg.src = "img/descripcionA-mobile.svg";
+        }
+
+    } else {
+        // Escritorio
+        if (bgSection) {
+            bgSection.setAttribute("data-background", "url(img/BG_11zon.webp)");
+            bgSection.style.backgroundImage = "url('img/BG_11zon.webp')";
+        }
+        if (bgRight) {
+            bgRight.setAttribute("data-background", "url(img/BG.svg)");
+            bgRight.style.backgroundImage = "url('img/BG.svg')";
+        }
+
+        if (tituloaImg) {
+            tituloaImg.src = "img/tituloa.svg";
+        }
+        if (descripcionaImg) {
+            descripcionaImg.src = "img/descripcionA.svg";
+        }
+    }
+
+    // Efecto de confeti en la parte derecha
+    setTimeout(function() {
+        // Obtener el elemento de la parte derecha
+        const rightSide = document.getElementById("bg-right");
+        
+        // Calcular la posición para el confeti (centrado en la parte derecha)
+        const rect = rightSide.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        
+        // Convertir coordenadas a porcentajes para canvas-confetti
+        const xPercent = x / window.innerWidth;
+        const yPercent = 0.3; // Más cerca de la parte superior
+        
+        // Lanzar confeti
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { x: xPercent, y: yPercent },
+            colors: ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3'],
+            disableForReducedMotion: true
+        });
+        
+        // Segundo lanzamiento de confeti después de un breve retraso
+        setTimeout(function() {
+            confetti({
+                particleCount: 50,
+                angle: 120,
+                spread: 55,
+                origin: { x: xPercent + 0.1, y: yPercent + 0.1 },
+                colors: ['#00e676', '#ff9100', '#ffea00', '#ff5252'],
+                disableForReducedMotion: true
+            });
+        }, 500);
+    }, 800); // Pequeño retraso para asegurar que la página esté completamente cargada
+});
 	</script>
-	
-	
-	
-
-
 </body>
 
 </html>
