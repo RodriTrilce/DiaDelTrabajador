@@ -355,7 +355,8 @@ document.addEventListener("DOMContentLoaded", function () {
         
         // Convertir coordenadas a porcentajes para canvas-confetti
         const xPercent = x / window.innerWidth;
-        const yPercent = 0.3; // Más cerca de la parte superior
+        // Ajustar yPercent según si estamos en móvil o escritorio
+        const yPercent = (window.innerWidth <= 768) ? 0.2 : 0.3;
         
         // Lanzar confeti
         confetti({
@@ -382,33 +383,53 @@ document.addEventListener("DOMContentLoaded", function () {
     // Variable para controlar si el confeti ya se ha lanzado
     let confetiLanzado = false;
 
-    // Función para verificar si la sección bg-right está visible
+    // Función para verificar si la sección bg-right está completamente visible
     function checkVisibility() {
         if (!confetiLanzado && bgRight) {
             const rect = bgRight.getBoundingClientRect();
-            // Verificar si la sección está visible (al menos parcialmente) en la ventana
-            const isVisible = (
-                rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.bottom >= 0
-            );
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
             
-            if (isVisible) {
-                lanzarConfeti();
-                confetiLanzado = true; // Marcar como lanzado para no repetir
+            // En móviles, verificamos que al menos el 50% de bg-right esté visible
+            if (window.innerWidth <= 768) {
+                // Calcular qué porcentaje del elemento está visible en la ventana
+                const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+                const percentVisible = visibleHeight / rect.height;
+                
+                // Solo activar si al menos el 50% del elemento es visible
+                if (percentVisible >= 0.5 && rect.top <= windowHeight * 0.5) {
+                    lanzarConfeti();
+                    confetiLanzado = true;
+                    // Quitar event listeners una vez que se ha lanzado
+                    window.removeEventListener('scroll', checkVisibility);
+                }
+            } else {
+                // En escritorio, verificar si la sección está visible (al menos parcialmente)
+                const isVisible = (
+                    rect.top <= windowHeight &&
+                    rect.bottom >= 0
+                );
+                
+                if (isVisible) {
+                    lanzarConfeti();
+                    confetiLanzado = true;
+                    // Quitar event listeners una vez que se ha lanzado
+                    window.removeEventListener('scroll', checkVisibility);
+                }
             }
         }
     }
 
-    // Verificar visibilidad inicial después de que la página se cargue completamente
-    setTimeout(checkVisibility, 800);
-
-    // Verificar visibilidad al hacer scroll
-    window.addEventListener('scroll', checkVisibility);
+    // No verificar inmediatamente, dar tiempo a que la página se cargue y el usuario pueda hacer scroll
+    setTimeout(function() {
+        checkVisibility(); // Verificación inicial
+        window.addEventListener('scroll', checkVisibility); // Verificar al hacer scroll
+    }, 1000);
     
-    // Verificar visibilidad también si hay cambios en el tamaño de la ventana
+    // Restablecer cuando cambie el tamaño de la ventana
     window.addEventListener('resize', function() {
-        // Reiniciar la bandera si hay un cambio de tamaño para permitir nuevo confeti
+        // Si cambia el tamaño, reiniciar para permitir nuevo confeti
         confetiLanzado = false;
+        window.addEventListener('scroll', checkVisibility);
         checkVisibility();
     });
 });
